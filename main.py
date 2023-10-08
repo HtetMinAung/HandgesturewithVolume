@@ -1,21 +1,25 @@
-import cv2
-import subprocess
-import mediapipe as mp
+import cv2              # OpenCV for capturing video and image processing
+import subprocess       # Subprocess for running terminal commands
+import mediapipe as mp  # MediaPipe for hand tracking
 
-cap = cv2.VideoCapture(0)
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1,
-                       min_detection_confidence=0.5, min_tracking_confidence=0.5)
-
-mp_drawing = mp.solutions.drawing_utils
+cap = cv2.VideoCapture(0)  # Open the default camera (camera index 0)
+mp_hands = mp.solutions.hands  # Initialize the MediaPipe hands module
+hands = mp_hands.Hands(
+    static_image_mode=False,  # Continuous hand tracking (not static image)
+    max_num_hands=1,           # Track only one hand
+    min_detection_confidence=0.5,  # Minimum confidence to detect a hand
+    min_tracking_confidence=0.5   # Minimum confidence to track hand landmarks
+)
+mp_drawing = mp.solutions.drawing_utils  # Utility functions for drawing landmarks
 
 while True:
-    ret, frame = cap.read()
+    ret, frame = cap.read()  # Read a frame from the webcam
     if not ret:
-        break
-    image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        break  # Exit the loop if there's no frame
 
-    results = hands.process(image_rgb)
+    image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the frame to RGB format
+
+    results = hands.process(image_rgb)  # Process the frame to detect hand landmarks
 
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
